@@ -38,15 +38,109 @@ def load_css():
         max-width: 1400px !important;
         margin: 0 auto !important;
     }
-/* ============================================
-   SIDEBAR STYLES - ALWAYS VISIBLE & EXPANDED
-    ============================================ */
+//* ============================================
+   SIDEBAR STYLES - RESPONSIVE COLLAPSIBLE
+   ============================================ */
 
-    /* EXTRA FIX - Remove ALL possible top spaces */
-    [data-testid="stSidebar"] > div:first-child {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
+    /* Base sidebar styles */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0a0c10 0%, #0d0f14 100%) !important;
+        border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+        transition: all 0.3s ease !important;
     }
+
+    /* ============================================
+       DESKTOP VIEW (Large screens)
+    ============================================ */
+    @media (min-width: 769px) {
+        /* Sidebar always expanded on desktop */
+        [data-testid="stSidebar"] {
+            min-width: 280px !important;
+            width: 280px !important;
+        }
+        
+        /* Hide collapse button on desktop */
+        [data-testid="stSidebarCollapsedControl"] {
+            display: none !important;
+        }
+        
+        /* Prevent collapsing on desktop */
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            min-width: 280px !important;
+            width: 280px !important;
+            transform: none !important;
+        }
+    }
+
+    /* ============================================
+       MOBILE VIEW (Small screens - collapsible)
+    ============================================ */
+    @media (max-width: 768px) {
+        /* Show collapse button on mobile */
+        [data-testid="stSidebarCollapsedControl"] {
+            display: flex !important;
+            background: #6366F1 !important;
+            border: none !important;
+            border-radius: 50% !important;
+            color: white !important;
+            width: 32px !important;
+            height: 32px !important;
+            position: fixed !important;
+            top: 1rem !important;
+            left: 1rem !important;
+            z-index: 999999 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+            cursor: pointer !important;
+        }
+        
+        [data-testid="stSidebarCollapsedControl"]:hover {
+            background: #818CF8 !important;
+            transform: scale(1.05) !important;
+        }
+        
+        /* Sidebar width when expanded on mobile */
+        [data-testid="stSidebar"][aria-expanded="true"] {
+            min-width: 260px !important;
+            width: 260px !important;
+            position: fixed !important;
+            z-index: 1000 !important;
+            height: 100vh !important;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        /* Sidebar width when collapsed on mobile */
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            min-width: 0px !important;
+            width: 0px !important;
+            overflow: hidden !important;
+        }
+        
+        /* Adjust collapse button position based on sidebar state */
+        [data-testid="stSidebar"][aria-expanded="true"] [data-testid="stSidebarCollapsedControl"] {
+            left: 270px !important;
+        }
+        
+        [data-testid="stSidebar"][aria-expanded="false"] [data-testid="stSidebarCollapsedControl"] {
+            left: 15px !important;
+        }
+        
+        /* Add overlay when sidebar is expanded on mobile */
+        [data-testid="stSidebar"][aria-expanded="true"]::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            pointer-events: none;
+        }
+    }
+
+    /* ============================================
+       REMOVE DEFAULT STREAMLIT ELEMENTS
+    ============================================ */
     
     /* Remove any invisible blocking elements */
     [data-testid="stSidebar"] .st-emotion-cache-1v0mbdj,
@@ -61,34 +155,14 @@ def load_css():
         margin: 0 !important;
         visibility: hidden !important;
     }
-    
+
     /* Force the sidebar content to start from top */
     [data-testid="stSidebar"] > div:first-child {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
-    }
-
-    /* Hide the collapse button completely */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: none !important;
-    }
-
-    /* Remove default sidebar header space */
-    [data-testid="stSidebar"] > div:first-child {
-        padding-top: 0 !important;
-    }
-
-    /* Remove any default header elements */
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"]:first-child {
-        margin-top: 0 !important;
-    }
-
-    /* Hide any default app title/text in sidebar */
-    [data-testid="stSidebar"] .st-emotion-cache-1v0mbdj,
-    .css-1v0mbdj {
-        display: none !important;
-        padding-top: 0 !important;
     }
 
     /* Hide default navigation menu */
@@ -99,21 +173,6 @@ def load_css():
     /* Hide any default page links in sidebar */
     .st-emotion-cache-1cypcdb {
         display: none !important;
-    }
-
-    /* Sidebar background - ALWAYS EXPANDED */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0a0c10 0%, #0d0f14 100%) !important;
-        border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
-        min-width: 280px !important;
-        width: 280px !important;
-    }
-
-    /* Prevent sidebar from being collapsed */
-    [data-testid="stSidebar"][aria-expanded="false"] {
-        min-width: 280px !important;
-        width: 280px !important;
-        transform: none !important;
     }
 
     /* Make sidebar brand the absolute first element */
@@ -228,15 +287,10 @@ def load_css():
     }
 
     /* ============================================
-       RESPONSIVE SIDEBAR
+       RESPONSIVE FONT SIZES
     ============================================ */
 
     @media (max-width: 768px) {
-        [data-testid="stSidebar"] {
-            min-width: 260px !important;
-            width: 260px !important;
-        }
-        
         .sidebar-brand-icon {
             font-size: 1.8rem;
         }
@@ -248,7 +302,18 @@ def load_css():
         .sidebar-brand-sub {
             font-size: 0.6rem;
         }
+        
+        .nav-group-label {
+            font-size: 0.65rem;
+            padding: 1rem 1.5rem 0.5rem 1.5rem;
+        }
+        
+        [data-testid="stSidebar"] .stButton button {
+            font-size: 0.8rem !important;
+            padding: 0.5rem 1rem !important;
+        }
     }
+
     /* ============================================
        END SIDEBAR STYLES
     ============================================ */
