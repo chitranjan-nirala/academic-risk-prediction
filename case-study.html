@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Risk Intelligence Platform — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1420;
+    --ink-2:#161D2C;
+    --paper:#F6F2E9;
+    --paper-dim:#CFCABD;
+    --line: rgba(246,242,233,0.12);
+    --risk-high:#FF6B4A;
+    --risk-med:#FBBF24;
+    --risk-low:#4ADE80;
+    --serif: 'Fraunces', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%; display:block;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 40px;}
+
+  /* ---------- Eyebrow / labels ---------- */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:24px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:28px; height:1px;
+    background:var(--risk-med);
+    display:inline-block;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:48px 0 0;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--paper-dim);
+  }
+  .hero-top span{display:block;}
+  .hero-mid{
+    flex:1;
+    display:flex;
+    align-items:center;
+    padding:60px 0;
+  }
+  .hero-title{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(48px, 9vw, 132px);
+    line-height:0.98;
+    letter-spacing:-0.01em;
+    max-width:1000px;
+  }
+  .hero-title em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--risk-high);
+  }
+  .hero-bottom{
+    display:grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap:40px;
+    border-top:1px solid var(--line);
+    padding:28px 0 48px;
+  }
+  .hero-bottom p{
+    font-size:15px;
+    color:var(--paper-dim);
+    max-width:30ch;
+  }
+  .hero-stack{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--paper-dim);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .hero-stack b{color:var(--paper); font-weight:500;}
+
+  /* ambient gauge */
+  .gauge-ambient{
+    position:absolute;
+    right:-180px; top:50%; transform:translateY(-50%);
+    width:600px; height:600px;
+    opacity:0.5;
+    pointer-events:none;
+  }
+
+  /* ---------- SECTION GENERIC ---------- */
+  section{
+    padding:120px 0;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  section.tight{padding:90px 0;}
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:40px;
+    margin-bottom:64px;
+    flex-wrap:wrap;
+  }
+  h2.section-title{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(34px, 5vw, 64px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .section-num{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--paper-dim);
+    text-align:right;
+    line-height:1.4;
+  }
+  .lede{
+    font-size:19px;
+    color:var(--paper-dim);
+    max-width:62ch;
+    margin-bottom:48px;
+  }
+  .lede strong{color:var(--paper); font-weight:500;}
+
+  /* ---------- GRID HELPERS ---------- */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:48px;}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:24px;}
+
+  /* ---------- CARDS ---------- */
+  .card{
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:32px;
+  }
+  .card h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:22px;
+    margin-bottom:14px;
+    letter-spacing:-0.01em;
+  }
+  .card p{color:var(--paper-dim); font-size:15px;}
+  .card .tag{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--risk-med); margin-bottom:14px; display:block;
+  }
+
+  ul.plain{list-style:none;}
+  ul.plain li{
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+    font-size:15px;
+    color:var(--paper-dim);
+    display:flex; gap:16px; align-items:flex-start;
+  }
+  ul.plain li:last-child{border-bottom:none;}
+  ul.plain li b{color:var(--paper); font-weight:500;}
+  ul.plain li .li-mark{
+    font-family:var(--mono); font-size:12px; color:var(--risk-med); padding-top:3px; flex-shrink:0; width:18px;
+  }
+
+  /* ---------- IMAGE PLACEHOLDER ---------- */
+  .shot{
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:
+      linear-gradient(135deg, var(--ink-2) 0%, #1B2334 100%);
+    aspect-ratio:16/10;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .shot::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:40px 40px;
+    opacity:0.35;
+  }
+  .shot-label{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--paper-dim);
+    border:1px dashed var(--line);
+    padding:10px 18px;
+    border-radius:30px;
+    position:relative; z-index:1;
+    background:var(--ink);
+  }
+
+  /* ---------- PROBLEM SECTION ---------- */
+  .problem-list{
+    display:flex; flex-direction:column;
+  }
+  .problem-list li{
+    display:grid;
+    grid-template-columns: 60px 1fr;
+    gap:24px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+    align-items:baseline;
+  }
+  .problem-list li:first-child{border-top:1px solid var(--line);}
+  .problem-list .pn{font-family:var(--mono); color:var(--risk-high); font-size:14px;}
+  .problem-list .pt{font-size:18px; color:var(--paper);}
+  .problem-question{
+    margin-top:48px;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(24px,3vw,36px);
+    line-height:1.3;
+    max-width:24ch;
+    color:var(--paper);
+  }
+
+  /* ---------- WORKFLOW / PIPELINE ---------- */
+  .flowline{
+    display:flex;
+    align-items:center;
+    gap:0;
+    overflow-x:auto;
+    padding-bottom:8px;
+  }
+  .flow-step{
+    flex:1 0 140px;
+    text-align:center;
+    padding:24px 12px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--ink-2);
+    font-size:13px;
+    font-family:var(--mono);
+    letter-spacing:.04em;
+    color:var(--paper-dim);
+    position:relative;
+  }
+  .flow-step b{display:block; font-family:var(--sans); font-size:14px; color:var(--paper); font-weight:500; margin-bottom:2px;}
+  .flow-arrow{
+    flex:0 0 28px;
+    text-align:center;
+    color:var(--risk-med);
+    font-family:var(--mono);
+  }
+  .flow-step.accent{
+    border-color:var(--risk-high);
+    background:rgba(255,107,74,0.06);
+  }
+  .flow-step.accent b{color:var(--risk-high);}
+
+  /* ---------- RISK SEGMENTS ---------- */
+  .seg-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .seg-card{
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:32px 28px;
+    background:var(--ink-2);
+    border-top:4px solid var(--seg-color);
+  }
+  .seg-card .dot{
+    width:14px; height:14px; border-radius:50%;
+    background:var(--seg-color);
+    margin-bottom:18px;
+  }
+  .seg-card h4{font-family:var(--serif); font-weight:600; font-size:22px; margin-bottom:8px;}
+  .seg-card p{color:var(--paper-dim); font-size:14px;}
+
+  /* ---------- METRICS (results) ---------- */
+  .metric-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;}
+  .metric{
+    background:var(--ink-2);
+    padding:36px 24px;
+    text-align:center;
+  }
+  .metric .val{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:clamp(28px,4vw,42px);
+    color:var(--risk-low);
+    letter-spacing:-0.02em;
+  }
+  .metric .lab{
+    margin-top:10px;
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    font-family:var(--mono);
+  }
+  .metric.hero-metric .val{color:var(--paper); font-size:clamp(40px,6vw,64px);}
+  .metric.hero-metric{background:#1B2334;}
+
+  /* ---------- ARCH / IA TREE ---------- */
+  .tree{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--paper-dim);
+    line-height:2.1;
+    white-space:pre;
+    overflow-x:auto;
+  }
+  .tree .root{color:var(--paper); font-weight:500;}
+  .tree .branch{color:var(--risk-med);}
+
+  /* ---------- STACK ---------- */
+  .stack-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .stack-group .tag{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--risk-med); margin-bottom:14px; display:block; border-bottom:1px solid var(--line); padding-bottom:10px;}
+  .stack-group ul{list-style:none;}
+  .stack-group li{font-size:16px; padding:8px 0; color:var(--paper);}
+
+  /* ---------- FINAL / LIVE LINKS ---------- */
+  .final{
+    padding:140px 0;
+    text-align:center;
+  }
+  .final h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(40px,7vw,88px);
+    line-height:1.05;
+    margin-bottom:32px;
+  }
+  .final p{
+    color:var(--paper-dim);
+    font-size:18px;
+    max-width:50ch;
+    margin:0 auto 48px;
+  }
+  .link-row{
+    display:flex; gap:20px; justify-content:center; flex-wrap:wrap;
+  }
+  .link-btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:18px 32px;
+    border:1px solid var(--paper);
+    color:var(--paper);
+    text-decoration:none;
+    border-radius:30px;
+    transition:all .2s ease;
+  }
+  .link-btn:hover{
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .link-btn.primary{
+    background:var(--risk-high);
+    border-color:var(--risk-high);
+    color:var(--ink);
+  }
+  .link-btn.primary:hover{
+    background:transparent;
+    color:var(--risk-high);
+  }
+
+  /* ---------- REFLECTION ---------- */
+  .reflection{
+    display:grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap:64px;
+    align-items:start;
+  }
+  .reflection-tags{display:flex; flex-wrap:wrap; gap:10px; margin-top:32px;}
+  .reflection-tags span{
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em;
+    border:1px solid var(--line); border-radius:30px; padding:10px 18px; color:var(--paper-dim);
+  }
+  .reflection p.big{
+    font-family:var(--serif);
+    font-size:clamp(22px,3vw,30px);
+    line-height:1.5;
+    font-style:italic;
+    color:var(--paper);
+  }
+
+  footer{
+    padding:48px 0;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    display:flex; justify-content:space-between;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .wrap{padding:0 24px;}
+    section{padding:80px 0;}
+    .grid-2, .grid-3, .grid-4, .seg-grid, .stack-grid, .reflection{
+      grid-template-columns:1fr;
+    }
+    .metric-grid{grid-template-columns:repeat(2,1fr);}
+    .metric.hero-metric{grid-column:1 / -1;}
+    .hero-bottom{grid-template-columns:1fr; gap:24px;}
+    .gauge-ambient{display:none;}
+    .reflection{gap:32px;}
+    footer{flex-direction:column; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO (Slide 1) ================= -->
+<header class="hero">
+  <div class="wrap" style="display:flex; flex-direction:column; height:100%; flex:1;">
+    <div class="hero-top">
+      <span>Product Design + Machine Learning</span>
+      <span>Case Study — 2025</span>
+    </div>
+    <div class="hero-mid">
+      <h1 class="hero-title">
+        Catching academic risk <em>before</em> report cards do.
+      </h1>
+    </div>
+    <div class="hero-bottom">
+      <p>An end-to-end platform that turns attendance, grades, and engagement data into early-warning signals — so faculty can step in while there's still time to help.</p>
+      <div class="hero-stack">
+        <span>Built with</span>
+        <b>Python · Streamlit · Scikit-Learn</b>
+        <b>Plotly · SQLite · Render</b>
+      </div>
+      <div class="hero-stack">
+        <span>Outcome</span>
+        <b>92.84% ROC-AUC</b>
+        <b>86.94% prediction accuracy</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- signature ambient gauge -->
+  <svg class="gauge-ambient" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="90" fill="none" stroke="#1E2638" stroke-width="14"/>
+    <circle cx="100" cy="100" r="90" fill="none" stroke="var(--risk-low)" stroke-width="14"
+            stroke-dasharray="565" stroke-dashoffset="120" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+  </svg>
+</header>
+
+<!-- ================= PROBLEM (Slide 2-3) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">The Problem</p>
+        <h2 class="section-title">Most institutions find out a student is struggling — after they've already failed.</h2>
+      </div>
+      <div class="section-num">01 — 02<br>Problem</div>
+    </div>
+
+    <p class="lede">Academic risk is rarely a surprise in hindsight. The signs — falling attendance, missed assignments, low participation — are usually visible weeks before grades reflect them. But without a system to surface those signals, faculty are left reacting to outcomes instead of preventing them.</p>
+
+    <ul class="problem-list">
+      <li><span class="pn">01</span><span class="pt">Student monitoring is manual — faculty rely on memory and spreadsheets, not signals.</span></li>
+      <li><span class="pn">02</span><span class="pt">Interventions arrive late, often after a student has already disengaged.</span></li>
+      <li><span class="pn">03</span><span class="pt">There's no predictive layer — only historical grades, reviewed too infrequently.</span></li>
+      <li><span class="pn">04</span><span class="pt">Cohort-level trends go unseen, so resources aren't directed where they're needed most.</span></li>
+      <li><span class="pn">05</span><span class="pt">Decision-making is slow, with no single view connecting data to action.</span></li>
+    </ul>
+
+    <p class="problem-question">"How might we help educators identify vulnerable students before they fail — not after?"</p>
+  </div>
+</section>
+
+<!-- ================= RESEARCH + USERS (Slide 4-5) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Research &amp; Users</p>
+        <h2 class="section-title">Two audiences, two scales of decision.</h2>
+      </div>
+      <div class="section-num">03 — 04<br>Discovery</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:64px;">
+      <div class="card">
+        <span class="tag">Faculty Members</span>
+        <h3>The first responders</h3>
+        <p>They need to spot a struggling student early, understand <em>why</em> they're at risk, and know what to do next — without digging through reports.</p>
+        <ul class="plain" style="margin-top:20px;">
+          <li><span class="li-mark">—</span> Student-level monitoring</li>
+          <li><span class="li-mark">—</span> Early risk detection</li>
+          <li><span class="li-mark">—</span> Actionable recommendations</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Academic Administrators</span>
+        <h3>The pattern-readers</h3>
+        <p>They think in cohorts, not individuals — looking for trends that inform where time, staff, and support should go.</p>
+        <ul class="plain" style="margin-top:20px;">
+          <li><span class="li-mark">—</span> Cohort-level insights</li>
+          <li><span class="li-mark">—</span> Performance analytics</li>
+          <li><span class="li-mark">—</span> Resource allocation decisions</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-bottom:32px;">Research into what actually predicts academic struggle pointed to three groups of signals — together, they became the foundation of the model.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <span class="tag">Academic</span>
+        <h3>What they're producing</h3>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Previous grades</li>
+          <li><span class="li-mark">—</span> Assignment completion</li>
+          <li><span class="li-mark">—</span> Study hours</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Behavioral</span>
+        <h3>How they're showing up</h3>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Attendance</li>
+          <li><span class="li-mark">—</span> Class participation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Environmental</span>
+        <h3>What's around them</h3>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Family support</li>
+          <li><span class="li-mark">—</span> Internet access</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOLUTION (Slide 6-8) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">The Solution</p>
+        <h2 class="section-title">One platform — from raw data to faculty decision.</h2>
+      </div>
+      <div class="section-num">05 — 07<br>Solution</div>
+    </div>
+
+    <p class="lede">The Academic Risk Intelligence Platform brings prediction, analytics, and intervention into a single workflow — built around seven core modules.</p>
+
+    <div class="grid-4" style="margin-bottom:80px;">
+      <div class="card"><h3 style="font-size:18px;">Risk Prediction</h3><p>Score any student in seconds.</p></div>
+      <div class="card"><h3 style="font-size:18px;">Recommendation Engine</h3><p>Turns scores into next steps.</p></div>
+      <div class="card"><h3 style="font-size:18px;">Cohort Analytics</h3><p>Institution-wide visibility.</p></div>
+      <div class="card"><h3 style="font-size:18px;">Student Segmentation</h3><p>High, medium, low risk — at a glance.</p></div>
+      <div class="card"><h3 style="font-size:18px;">Intervention Center</h3><p>Where insight becomes action.</p></div>
+      <div class="card"><h3 style="font-size:18px;">Model Performance</h3><p>Transparency into the engine.</p></div>
+      <div class="card"><h3 style="font-size:18px;">PDF Reporting</h3><p>Shareable, printable summaries.</p></div>
+      <div class="card" style="border-color:var(--risk-high); background:rgba(255,107,74,0.05);"><h3 style="font-size:18px; color:var(--risk-high);">All connected</h3><p>One data model, one workflow.</p></div>
+    </div>
+
+    <p class="eyebrow">System Workflow</p>
+    <div class="flowline" style="margin-bottom:80px;">
+      <div class="flow-step"><b>Student data</b>raw inputs</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Processing</b>cleaning &amp; prep</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><b>ML model</b>prediction</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Risk score</b>+ probability</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Insights</b>recommendations</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Faculty</b>decision &amp; action</div>
+    </div>
+
+    <p class="eyebrow">Information Architecture</p>
+    <div class="card">
+      <div class="tree"><span class="root">Dashboard</span>
+├── <span class="branch">Student Profile</span>
+│     ├── Academic History
+│     └── Active Engagement
+├── <span class="branch">Risk Prediction</span>
+│     └── Recommendations
+├── <span class="branch">Cohort Analytics</span>
+│     ├── Student Segmentation
+│     └── Risk History
+├── <span class="branch">Model Performance</span>
+└── <span class="branch">Faculty Intervention</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PREDICTION DASHBOARD (Slide 9-10) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Prediction Dashboard</p>
+        <h2 class="section-title">From seven inputs to one clear answer.</h2>
+      </div>
+      <div class="section-num">08 — 09<br>Core Flow</div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <p class="lede" style="margin-bottom:32px;">Faculty enter what they already know about a student — attendance, study habits, grades, and support context. The platform does the rest, returning an instant risk assessment in seconds.</p>
+        <div class="card">
+          <span class="tag">Input Parameters</span>
+          <ul class="plain">
+            <li><span class="li-mark">01</span>Attendance</li>
+            <li><span class="li-mark">02</span>Study hours</li>
+            <li><span class="li-mark">03</span>Previous grades</li>
+            <li><span class="li-mark">04</span>Participation</li>
+            <li><span class="li-mark">05</span>Assignment completion</li>
+            <li><span class="li-mark">06</span>Family support</li>
+            <li><span class="li-mark">07</span>Internet access</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot"><span class="shot-label">Prediction Dashboard — screenshot</span></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:64px;">
+      <div class="shot"><span class="shot-label">Risk Assessment Result — screenshot</span></div>
+      <div>
+        <p class="eyebrow">Risk Assessment Experience</p>
+        <p class="lede" style="margin-bottom:32px;">The output is designed to read like a diagnosis, not a data dump — a score, a category, and the "why" behind it.</p>
+        <ul class="plain">
+          <li><b>Risk Score</b> — a single number summarizing overall risk</li>
+          <li><b>Risk Probability</b> — the model's confidence in that score</li>
+          <li><b>Risk Category</b> — High, Medium, or Low at a glance</li>
+          <li><b>Key Observations</b> — which factors drove the result</li>
+          <li><b>Personalized Recommendations</b> — what to do next</li>
+        </ul>
+        <p style="margin-top:24px; color:var(--paper-dim); font-style:italic; font-family:var(--serif); font-size:18px;">Design goal: turn complex ML predictions into something an educator can act on immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ANALYTICS & INTERVENTION (Slide 11-13) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Analytics &amp; Intervention</p>
+        <h2 class="section-title">From one student to the whole cohort — and back to action.</h2>
+      </div>
+      <div class="section-num">10 — 12<br>Scale &amp; Action</div>
+    </div>
+
+    <p class="lede" style="margin-bottom:32px;">Cohort Analytics gives administrators a top-down view of institutional risk, while segmentation translates that view into priorities — and the Intervention Center turns priorities into next steps.</p>
+
+    <div class="shot" style="margin-bottom:64px; aspect-ratio:21/9;"><span class="shot-label">Cohort Analytics Dashboard — screenshot</span></div>
+
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="card">
+        <span class="tag">Key Metrics</span>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Total predictions</li>
+          <li><span class="li-mark">—</span> High / medium / low risk counts</li>
+          <li><span class="li-mark">—</span> Average risk score</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Visualizations</span>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Risk distribution</li>
+          <li><span class="li-mark">—</span> Risk trends over time</li>
+          <li><span class="li-mark">—</span> Historical predictions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Purpose</span>
+        <p style="margin-top:0;">Institutional-level visibility — so leadership can see where attention is needed before it's requested.</p>
+      </div>
+    </div>
+
+    <p class="eyebrow" style="margin-top:64px;">Student Segmentation — who needs attention first</p>
+    <div class="seg-grid" style="margin-bottom:64px;">
+      <div class="seg-card" style="--seg-color:var(--risk-high);">
+        <div class="dot"></div>
+        <h4>High Risk</h4>
+        <p>Students who need intervention now — flagged for immediate faculty follow-up.</p>
+      </div>
+      <div class="seg-card" style="--seg-color:var(--risk-med);">
+        <div class="dot"></div>
+        <h4>Medium Risk</h4>
+        <p>Showing early warning signs — worth monitoring closely over the coming weeks.</p>
+      </div>
+      <div class="seg-card" style="--seg-color:var(--risk-low);">
+        <div class="dot"></div>
+        <h4>Low Risk</h4>
+        <p>On track — no action needed, but visible if circumstances change.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <p class="eyebrow">Faculty Intervention Center</p>
+        <h3 style="font-family:var(--serif); font-size:28px; margin-bottom:16px;">Predictions alone don't help anyone.</h3>
+        <p class="lede" style="margin-bottom:24px;">This is where risk scores become real conversations — concrete, personalized suggestions faculty can act on right away.</p>
+        <ul class="plain">
+          <li><span class="li-mark">—</span> Improve attendance</li>
+          <li><span class="li-mark">—</span> Increase study hours</li>
+          <li><span class="li-mark">—</span> Complete pending assignments</li>
+          <li><span class="li-mark">—</span> Seek mentorship</li>
+          <li><span class="li-mark">—</span> Improve class participation</li>
+        </ul>
+      </div>
+      <div class="shot"><span class="shot-label">Faculty Intervention Center — screenshot</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ML PIPELINE & RESULTS (Slide 14-16) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Machine Learning</p>
+        <h2 class="section-title">Choosing the model that earns trust, not just accuracy.</h2>
+      </div>
+      <div class="section-num">13 — 15<br>Under the Hood</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:64px;">
+      <div class="shot"><span class="shot-label">Model Performance Dashboard — screenshot</span></div>
+      <div>
+        <p class="eyebrow">Models Evaluated</p>
+        <ul class="plain" style="margin-bottom:24px;">
+          <li><span class="li-mark">—</span> Logistic Regression</li>
+          <li><span class="li-mark">—</span> Random Forest</li>
+          <li><span class="li-mark">—</span> Gradient Boosting</li>
+        </ul>
+        <div class="card" style="border-color:var(--risk-low); background:rgba(74,222,128,0.05);">
+          <span class="tag" style="color:var(--risk-low);">Selected Model</span>
+          <h3>Logistic Regression</h3>
+          <p>The best balance of accuracy, interpretability, and deployment simplicity — critical for a tool faculty need to trust and understand, not just use.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="eyebrow">Pipeline</p>
+    <div class="flowline" style="margin-bottom:80px;">
+      <div class="flow-step"><b>Ingestion</b>raw records</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Cleaning</b>handle gaps</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Feature engineering</b>signal design</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Transformation</b>scaling, encoding</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><b>Training</b>logistic regression</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Evaluation</b>metrics &amp; checks</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><b>Deployment</b>live on Render</div>
+    </div>
+
+    <p class="eyebrow">Results</p>
+    <div class="metric-grid">
+      <div class="metric hero-metric">
+        <div class="val">86.94%</div>
+        <div class="lab">Accuracy</div>
+      </div>
+      <div class="metric">
+        <div class="val">77.34%</div>
+        <div class="lab">Precision</div>
+      </div>
+      <div class="metric">
+        <div class="val">67.74%</div>
+        <div class="lab">Recall</div>
+      </div>
+      <div class="metric">
+        <div class="val">72.22%</div>
+        <div class="lab">F1 Score</div>
+      </div>
+      <div class="metric">
+        <div class="val">92.84%</div>
+        <div class="lab">ROC-AUC</div>
+      </div>
+    </div>
+    <p style="margin-top:32px; color:var(--paper-dim); max-width:60ch;">In practice, this means the platform can identify academically vulnerable students with high reliability — flagging the right students early, with enough confidence for faculty to act on.</p>
+  </div>
+</section>
+
+<!-- ================= IMPACT & STACK (Slide 17-18) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Outcomes &amp; Stack</p>
+        <h2 class="section-title">What changes when risk is visible early.</h2>
+      </div>
+      <div class="section-num">16 — 17<br>Impact</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:80px;">
+      <div class="card">
+        <span class="tag">For Faculty</span>
+        <ul class="plain">
+          <li><span class="li-mark">✓</span> Faster decision-making — risk is visible at a glance</li>
+          <li><span class="li-mark">✓</span> Earlier intervention planning, before issues compound</li>
+          <li><span class="li-mark">✓</span> Less time spent on manual monitoring</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">For Institutions</span>
+        <ul class="plain">
+          <li><span class="li-mark">✓</span> Stronger student retention strategies</li>
+          <li><span class="li-mark">✓</span> Clearer tracking of student success over time</li>
+          <li><span class="li-mark">✓</span> Academic support backed by data, not guesswork</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="eyebrow">Technology Stack</p>
+    <div class="stack-grid">
+      <div class="stack-group">
+        <span class="tag">Interface</span>
+        <ul><li>Streamlit</li></ul>
+      </div>
+      <div class="stack-group">
+        <span class="tag">Machine Learning</span>
+        <ul><li>Scikit-Learn</li><li>XGBoost</li></ul>
+      </div>
+      <div class="stack-group">
+        <span class="tag">Data &amp; Analytics</span>
+        <ul><li>Pandas</li><li>NumPy</li><li>Plotly</li></ul>
+      </div>
+      <div class="stack-group">
+        <span class="tag">Database</span>
+        <ul><li>SQLite</li></ul>
+      </div>
+      <div class="stack-group">
+        <span class="tag">Reporting</span>
+        <ul><li>ReportLab (PDF)</li></ul>
+      </div>
+      <div class="stack-group">
+        <span class="tag">Deployment</span>
+        <ul><li>Render</li><li>GitHub</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LIVE PRODUCT ================= -->
+<section class="final" style="border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow" style="justify-content:center;">Try It</p>
+    <h2>See it live.</h2>
+    <p>The platform is deployed and fully interactive — run a prediction, explore the cohort analytics, and see the intervention recommendations for yourself.</p>
+    <div class="link-row">
+      <a class="link-btn primary" href="https://academic-risk-prediction.onrender.com" target="_blank">Open Live Demo</a>
+      <a class="link-btn" href="https://github.com/chitranjan-nirala/academic-risk-prediction" target="_blank">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REFLECTION (Slide 20) ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Reflection</p>
+        <h2 class="section-title">One problem, five disciplines, one platform.</h2>
+      </div>
+      <div class="section-num">18<br>Reflection</div>
+    </div>
+
+    <div class="reflection">
+      <div>
+        <p class="lede" style="margin-bottom:0;">This project brought together UI/UX design, data analytics, machine learning, dashboard design, and product thinking into a single end-to-end build — from the first research question to a live, working application.</p>
+        <div class="reflection-tags">
+          <span>UI/UX Design</span>
+          <span>Data Analytics</span>
+          <span>Machine Learning</span>
+          <span>Dashboard Design</span>
+          <span>Product Thinking</span>
+        </div>
+      </div>
+      <p class="big">"The result is a platform that doesn't just predict risk — it helps educators make informed decisions through clear, actionable insight, at the moment it can still make a difference."</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+    <span>Academic Risk Intelligence Platform</span>
+    <span>Case Study — End</span>
+  </div>
+</footer>
+
+</body>
+</html>
